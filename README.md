@@ -1,3 +1,3 @@
 # Blocksite custom page
 
-![example](image.PNG)
+![example](screenshots/screenshot.png)
