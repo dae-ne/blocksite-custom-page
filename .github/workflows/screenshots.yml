@@ -1,0 +1,48 @@
+name: Upload screenshots
+
+on:
+  workflow_dispatch:
+  workflow_call:
+      
+jobs:
+  screenshot:
+    name: Upload screenshot
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        size: [
+          {
+            width: 1024,
+            height: 768
+          },
+          {
+            width: 1280,
+            height: 800
+          },
+          {
+            width: 1440,
+            height: 900
+          },
+          {
+            width: 1920,
+            height: 1080
+          }
+        ]
+
+    steps:
+      - name: Screenshot website
+        id: screenshot
+        uses: swinton/screenshot-website@v1.x
+        with:
+          source: https://dae-ne.github.io/blocksite-custom-page
+          destination: screenshot_${{ matrix.size.width }}x${{ matrix.size.height }}.png
+          width: ${{ matrix.size.width }}
+          height: ${{ matrix.size.height }}
+
+      - name: Upload to Google Drive
+        uses: adityak74/google-drive-upload-git-action@main
+        with:
+          credentials: ${{ secrets.CREDENTIALS }}
+          filename: ${{ steps.screenshot.outputs.path }}
+          folderId: ${{ secrets.FOLDER_ID }}
+          overwrite: true
